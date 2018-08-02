@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+}
+
+svg {
+  padding: 1rem;
+  width: calc(100vw - 2rem);
+  height: calc(100vh - 2rem);
+}
+
+svg * {
+  stroke: black;
+  stroke-width: 0.25px;
+  fill: lightgray;
+}
