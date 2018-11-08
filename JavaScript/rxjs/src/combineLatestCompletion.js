@@ -33,11 +33,28 @@ const vCombinedOnlyUncompletes$ = Rx.Observable.combineLatest(
 // Act
 // ---------------------------------------------------------------------------
 
-vCombinedOnlyUncompletes$.subscribe(observer('vCombinedOnlyUncompletes'))
-vCombinedOnlyUncompletes$.take(1).subscribe(observer('vCombinedOnlyUncompletes-Take1'))
+// - Test completion semantics
 
-vUncomplete1$.next('next-1')
-vUncomplete1$.complete()
+// vCombinedOnlyUncompletes$.subscribe(observer('vCombinedOnlyUncompletes'))
+// vCombinedOnlyUncompletes$.take(1).subscribe(observer('vCombinedOnlyUncompletes-Take1'))
+
+// vUncomplete1$.next('next-1')
+// vUncomplete1$.complete()
+
+// - Test subscription semantics
+
+Rx.Observable
+  .combineLatest(
+    v1$, v2$, vMany1$, vUncomplete1$,
+    (...values) => console.log('combineLatest - no sub ->', values),
+  )
+
+Rx.Observable
+  .combineLatest(
+    v1$, v2$, vMany1$, vUncomplete1$,
+    (...values) => values,
+  )
+  .subscribe((values) => console.log('combineLatest - sub ->', values))
 
 // ---------------------------------------------------------------------------
 // Observations
@@ -45,3 +62,4 @@ vUncomplete1$.complete()
 
 // combineLatest still emits when some source observables haven't completed
 // combineLatest only completes when all source observables complete
+// combineLatest, naturally, doesn't actually emit until there are subscribers
