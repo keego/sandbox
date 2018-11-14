@@ -20,13 +20,16 @@ const accountInfo$ = new Rx.ReplaySubject(1)
 const setupNeeded$ = accountInfo$
   .do(accountInfo => console.log('setupNeeded$ :: accountInfo$ sourced ->', accountInfo))
   .map(accountInfo => {
+    console.log('setupNeeded$ :: transformations')
     return !accountInfo || accountInfo.needsHelp
   })
-  .publishReplay(1)
-  // .multicast(new Rx.BehaviorSubject())
+  .do(accountInfo => console.log('_letting_sourced_', accountInfo))
+  // .publishReplay(1)
+  .multicast(() => new Rx.ReplaySubject(1))
   // .publish()
 
   .refCount()
+  .do(accountInfo => console.log('_letting_published_', accountInfo))
 
   // .share()
 
@@ -127,6 +130,8 @@ function testSubEmitUnsubEmitSub() {
 
   subs[s20]()
 
+  accountInfo$next({ needsHelp: 'FUCK YOU IMA BLOW SHIT UP' })
+
   accountInfo$next({ needsHelp: false })
 
   const s21 = 'setup sub 2.1'
@@ -170,3 +175,6 @@ testSubEmitUnsubEmitSub()
 // are no downstream subscribers, which means the persisted transformed value can become outdated. .connect()
 // fixes this, but returns a subscription instead of chaining the observable. This can be fixed by using .publishX
 // and .connect in a .let expansion.
+
+// Turns out replaySubjects are super helpful. Simply using .multicast(() => new Rx.ReplaySubject(1)) provides
+// lazy transformation execution + latest value persistence
