@@ -176,5 +176,5 @@ testSubEmitUnsubEmitSub()
 // fixes this, but returns a subscription instead of chaining the observable. This can be fixed by using .publishX
 // and .connect in a .let expansion.
 
-// Turns out replaySubjects are super helpful. Simply using .multicast(() => new Rx.ReplaySubject(1)) provides
-// lazy transformation execution + latest value persistence
+// Turns out replaySubjects are super helpful. Simply using .multicast(() => new Rx.ReplaySubject(1)).refCount()
+// provides lazy transformation execution + latest value persistence
